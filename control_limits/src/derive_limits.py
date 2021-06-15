@@ -1,8 +1,8 @@
 import numpy as np
 from enum import Enum
-from .locate_max_separability import StatisticalDistance
+from .max_class_separability import StatisticalDistance
 from .stat_analysis_limits import StatisticalAnalysis
-from .decision_tree import DecisionTree
+from .decision_boundary import DecisionBoundary
 
 
 class SearchRoute(Enum):
@@ -213,7 +213,7 @@ class DeriveLimits(StatisticalDistance, StatisticalAnalysis):
             numpy array: Time steps.
             dict: Decision boundaries."""
 
-        dt = DecisionTree(self.array, self.labels, self.start_time_step, self.precision_limits)
+        dt = DecisionBoundary(self.array, self.labels, self.start_time_step, self.precision_limits)
         f_beta_score = self.f_beta_score()
         self.len_limits += 1
         while True:
@@ -252,7 +252,7 @@ class DeriveLimits(StatisticalDistance, StatisticalAnalysis):
             numpy array: Time steps.
             dict: Decision boundaries."""
 
-        dt = DecisionTree(self.array, self.labels, self.start_time_step, self.precision_limits)
+        dt = DecisionBoundary(self.array, self.labels, self.start_time_step, self.precision_limits)
         self.split_values.append(dt.fit())
         time_steps, boundaries = self.__derive_limits(SearchRoute.LEFT,
                                                       self.start_time_step,

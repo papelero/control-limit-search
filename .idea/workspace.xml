@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ecc31b03-6b81-4e43-82ed-9fa4a8865bbe" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/control-limit-search.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/decision_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/decision_boundary.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/control_limits/src/derive_limits.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/derive_limits.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/locate_max_separability.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/locate_max_separability.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/stat_analysis_limits.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/stat_analysis_limits.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/iterate_limits_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/recursive_search.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/locate_max_separability.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/max_class_separability.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,5 +57,22 @@
       <updated>1623700177681</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="669" y="115" key="#locate_max_separability" timestamp="1623792315969">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="669" y="115" key="#locate_max_separability/0.0.1920.1040@0.0.1920.1040" timestamp="1623792315969" />
   </component>
 </project>

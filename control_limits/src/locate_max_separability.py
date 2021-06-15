@@ -2,6 +2,14 @@ import numpy as np
 
 
 class StatisticalDistance:
+    """Locate the maximum class separability in time-series data
+
+    :param array: input data
+    :type array: numpy array
+    :param labels: input labels
+    :type labels: input labels
+    """
+
     def __init__(self, array, labels):
         self.array = array
         self.labels = labels
@@ -11,30 +19,32 @@ class StatisticalDistance:
 
     @staticmethod
     def __empirical_cdf(eval_data, data_single_label):
-        """Calculate the empirical CDF.
+        """Calculate the empirical CDF
 
-        Args:
-            eval_data (numpy array): Data for evaluation.
-            data_single_label (numpy array): Data distribution.
-
-        Returns:
-            numpy array: Empirical cumulative distribution function"""
+        :param eval_data: data for evaluation
+        :type eval_data: numpy array
+        :param data_single_label: data distribution
+        :type data_single_label: numpy array
+        :return: empirical cumulative distribution
+        :rtype: numpy array
+        """
 
         emp_cdf_total = np.empty(shape=eval_data.size)
         for idx, x in enumerate(eval_data):
             num_of_features, emp_cdf = data_single_label.size, 0
-            for d in data_single_label:
-                if d <= x:
+            for instance in data_single_label:
+                if instance <= x:
                     emp_cdf += 1
             emp_cdf /= num_of_features
             emp_cdf_total[idx] = emp_cdf
         return emp_cdf_total
 
     def compute_stat_distance(self):
-        """Returns the Total Variation Distance.
+        """Calculate the total variation distance
 
-        Returns:
-            numpy array: Distance between Ok/Nok distribution across all time steps."""
+        :return: total variation distance
+        :rtype: numpy array
+        """
 
         distance = np.empty(shape=(self.array.shape[-1],))
         for idx, arr in enumerate(self.array.T):
@@ -47,9 +57,10 @@ class StatisticalDistance:
         return distance
 
     def extract_start_time_step(self):
-        """Returns the time step with largest class separability.
+        """Calculate the time-step of largest class separability
 
-        Returns:
-            int: Time step with largest class separability."""
+        :return: time-step of maximum class separability
+        :rtype: int
+        """
 
         return np.argmax(self.compute_stat_distance())

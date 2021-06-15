@@ -4,15 +4,21 @@ import seaborn as sns
 
 
 def plot_limits(x_train, x_test, y_train, y_test, output_train, output_test):
-    """Visualize the result of the Window Finder.
+    """Visualize the result of the Window Finder
 
-    Args:
-        x_train (numpy array): Input data.
-        x_test (numpy array): Test data.
-        y_train (numpy array): Input labels.
-        y_test (numpy array): Test labels.
-        output_train (dict): Output of training.
-        output_test (dict): Output of testing."""
+    :param x_train: train data
+    :type x_train: numpy array
+    :param x_test: test data
+    :type x_test: numpy array
+    :param y_train: train labels
+    :type y_train: numpy array
+    :param y_test: test labels
+    :type y_test: numpy array
+    :param output_train: output training
+    :type output_train: dict
+    :param output_test: output testing
+    :type output_test: dict
+    """
 
     fig, axs = plt.subplots(1, 2, figsize=(5.512, 2.168))
 

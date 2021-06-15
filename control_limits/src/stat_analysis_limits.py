@@ -2,23 +2,37 @@ from sklearn.metrics import confusion_matrix
 
 
 def scale_precision_input(precision_limits, input_min=0.5, input_max=1.0, start_interval=2.0, end_interval=-2.0):
-    """Scale user-input to derive beta for F-beta score.
+    """Derive beta for f-beta score from user input
 
-    Args:
-        precision_limits (float): User-input.
-        input_min (float): Minimum possible precision.
-        input_max (float): Maximum possible precision.
-        start_interval (float): Start of transformed interval.
-        end_interval (float): End of transformed interval.
-
-    Returns:
-        float: Scaled user-input."""
+    :param precision_limits: user input precision
+    :type precision_limits: float
+    :param input_min: minimum possible precision
+    :type input_min: float
+    :param input_max: maximum possible precision
+    :type input_max: float
+    :param start_interval: start of transformed interval
+    :type start_interval: float
+    :param end_interval: end of transformed interval
+    :type end_interval: float
+    :return: f-beta score
+    :rtype: float
+    """
 
     scaling_factor = (end_interval - start_interval)
     return scaling_factor * ((precision_limits - input_min) / (input_max - input_min)) + start_interval
 
 
 class StatisticalAnalysis:
+    """Compute measure of success for the control limits
+
+    :param precision_limits: user input precision
+    :type precision_limits: float
+    :param precision: precision
+    :type precision: float
+    :param recall: recall
+    :type recall: float
+    """
+
     def __init__(self, precision_limits, precision, recall):
         self.precision_limits = precision_limits
         self.precision = precision
@@ -28,56 +42,75 @@ class StatisticalAnalysis:
     def __repr__(self):
         return f'F-beta(precision: {self.precision}, recall: {self.recall}, beta: {self.beta})'
 
+    def __beta__(self):
+        """Return beta for calculating the f-beta score
+
+        :return: beta
+        :rtype: float
+        """
+
+        return 10 ** scale_precision_input(self.precision_limits)
+
     @property
     def precision(self):
-        """Return the precision.
+        """Return the precision
 
-        Returns:
-            float: Precision."""
+        :return: precision of the control limits
+        :rtype: float
+        """
 
         return self.__precision
 
     @precision.setter
     def precision(self, value):
-        """Update the precision."""
+        """Update the precision
+
+        :param value: new precision value
+        :type value: float
+        """
 
         self.__precision = value
 
     @property
     def recall(self):
-        """Return the recall.
+        """Return the recall
 
-        Returns:
-            float: Recall."""
+        :return: recall of the control limits
+        :rtype: float
+        """
 
         return self.__recall
 
     @recall.setter
     def recall(self, value):
-        """Update the recall."""
+        """Update the recall
+
+        :param value: new recall value
+        :type value: float
+        """
 
         self.__recall = value
 
-    def __beta__(self):
-        return 10 ** scale_precision_input(self.precision_limits)
+    def update_measures(self, labels_true, labels_limits):
+        """Update the success measures given the control limits
 
-    def update_metrics(self, true_labels, labels_limits):
-        """Update the metrics given the control limits.
+        :param labels_true: true labels
+        :type labels_true: numpy array
+        :param labels_limits: true labels
+        :type labels_limits: numpy array
+        """
 
-        Args:
-            true_labels (numpy array): True labels.
-            labels_limits (numpy array): Predicted labels per control limits."""
-
-        _, fp, fn, tp = confusion_matrix(true_labels, labels_limits).ravel()
+        _, fp, fn, tp = confusion_matrix(labels_true, labels_limits).ravel()
         self.precision = tp / (fp + tp)
         self.recall = tp / (fn + tp)
 
     def f_beta_score(self):
-        """Return the F-beta score.
+        """Return the f-beta score
 
-        Returns:
-            float: F-beta score."""
+        :return: f-beta score
+        :rtype: float
+        """
 
         term1 = self.precision * self.recall
-        term2 = (self.beta.__pow__(2) * self.precision) + self.recall
-        return (1 + self.beta.__pow__(2)) * (term1 / term2)
+        term2 = ((self.beta ** 2) * self.precision) + self.recall
+        return (1 + (self.beta ** 2)) * (term1 / term2)

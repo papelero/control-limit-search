@@ -197,7 +197,7 @@ class DeriveLimits(StatisticalDistance, StatisticalAnalysis):
         for t in range(time_steps.size):
             indices_nok = np.where((limits_series[:, t] < boundaries[0][t]) | (limits_series[:, t] > boundaries[1][t]))
             limits_labels[indices_nok] = self.label_nok
-        self.update_metrics(self.labels, limits_labels)
+        self.update_measures(self.labels, limits_labels)
 
         if predict:
             return limits_labels

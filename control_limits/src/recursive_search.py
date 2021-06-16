@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import confusion_matrix
 from .derive_limits import DeriveLimits
+from ..utils import assert_input, assert_params
 
 
 class ControlLimits:
@@ -65,47 +66,53 @@ class ControlLimits:
 
         return {key: [] for key in self.keys}
         
-    def __return_fp(self, array, labels, predicted_labels):
-        """Return the false positive.
+    def __return_fp(self, array, labels, labels_limits):
+        """Return the false positive data
+        
+        :param array: input data
+        :type array: numpy array
+        :param labels: input labels
+        :type labels: numpy array
+        :param labels_limits: predicted labels
+        :type labels_limits: numpy array
+        :return: false postive data
+        :rtype: numpy array
+        """
 
-        Args:
-            array: Input data.
-            labels: Input labels.
-            predicted_labels: Predicted labels.
-
-        Returns:
-            numpy array: False positive series."""
-
-        predicted_ok = predicted_labels[np.where(labels == self.label_ok)[0]]
-        indices_fp = np.where(predicted_ok == self.label_nok)[0]
+        labels_limits_ok = labels_limits[np.where(labels == self.label_ok)[0]]
+        indices_fp = np.where(labels_limits_ok == self.label_nok)[0]
         return array[indices_fp, :]
 
-    def __return_fn(self, array, labels, predicted_labels):
-        """Return the false negative.
+    def __return_fn(self, array, labels, labels_limits):
+        """Return the false negative data
 
-        Args:
-            array: Input data.
-            labels: Input labels.
-            predicted_labels: Predicted labels.
-
-        Returns:
-            numpy array: False negative series."""
+        :param array: input data
+        :type array: numpy array
+        :param labels: input labels
+        :type labels: numpy array
+        :param labels_limits: predicted labels
+        :type labels_limits: numpy array
+        :return: false negative data
+        :rtype: numpy array
+        """
 
         offset = labels[labels == self.label_ok].size
-        predicted_nok = predicted_labels[np.where(labels == self.label_nok)[0]]
-        indices_fn = np.where(predicted_nok == self.label_ok)[0]
+        labels_limits_nok = labels_limits[np.where(labels == self.label_nok)[0]]
+        indices_fn = np.where(labels_limits_nok == self.label_ok)[0]
         return array[indices_fn + offset, :]
 
     def accuracy(self, array, labels, output):
-        """Return the accuracy of the defined specification limits.
-
-        Args:
-            array (numpy array): Input data.
-            labels (numpy array): Input labels.
-            output (dict): Empirical control limits.
-
-        Returns:
-            float: Accuracy."""
+        """Estimate the accuracy of the control limits
+        
+        :param array: input data
+        :type array: numpy array
+        :param labels: input labels
+        :type labels: numpy array
+        :param output: control limits
+        :type output: dict
+        :return: accuravy of the control limits
+        :rtype: float
+        """
 
         time_steps, boundaries = output['time_steps'], output['boundaries']
         limits_labels = np.ones(shape=labels.shape, dtype=np.int8)
@@ -120,89 +127,91 @@ class ControlLimits:
         return round((tn + tp) / (tn + fp + fn + tp), 2)
 
     def fit(self):
-        """Fit the empirical control limits on train_data.
-
-        Returns:
-            dict: Fitting results."""
-
-        self.__assert_input(self.array, self.labels)
-        self.__assert_params(self.array, self.precision_limits, self.length_limits, self.shape_limits)
+        """Fitting on the training data
+        
+        :return: training output
+        :rtype: dict
+        """
 
         limits = DeriveLimits(self.array, self.labels, self.precision_limits, self.length_limits, self.shape_limits)
-        predicted_labels, time_steps, boundaries = limits.derive(predict=True)
+        labels_limits, time_steps, boundaries = limits.derive(predict=True)
         f_beta_score, recall = limits.f_beta_score(), limits.recall
         fn, fp = list(), list()
         while True:
             self.__store_limits(time_steps, boundaries)
             if recall == float(1):
-                fp += [self.__return_fp(self.array, self.labels, predicted_labels)]
-                fn += [self.__return_fn(self.array, self.labels, predicted_labels)]
+                fp += [self.__return_fp(self.array, self.labels, labels_limits)]
+                fn += [self.__return_fn(self.array, self.labels, labels_limits)]
                 values = [fn, fp, self.time_steps, self.boundaries, f_beta_score]
                 for key, value in zip(self.keys, values):
                     self.output_fit[key] = value
                 return self.output_fit
             else:
-                self.array, self.labels = self.__deploy(self.array, self.labels, predicted_labels)
+                self.array, self.labels = self.__apply(self.array, self.labels, labels_limits)
                 next_limits = DeriveLimits(self.array, self.labels, self.precision_limits, self.length_limits,
                                            self.shape_limits)
-                next_labels_spec_limits, next_time_steps, next_boundaries = next_limits.derive(predict=True)
+                next_labels_limits, next_time_steps, next_boundaries = next_limits.derive(predict=True)
                 next_f_beta_score, next_recall = next_limits.f_beta_score(), next_limits.recall
                 if next_f_beta_score <= f_beta_score:
-                    fp += [self.__return_fp(self.array, self.labels, predicted_labels)]
-                    fn += [self.__return_fn(self.array, self.labels, predicted_labels)]
+                    fp += [self.__return_fp(self.array, self.labels, labels_limits)]
+                    fn += [self.__return_fn(self.array, self.labels, labels_limits)]
                     values = [fn, fp, self.time_steps, self.boundaries]
                     for key, value in zip(self.keys, values):
                         self.output_fit[key] = value
                     return self.output_fit
-            predicted_labels, time_steps, boundaries = next_labels_spec_limits, next_time_steps, next_boundaries
+            labels_limits, time_steps, boundaries = next_labels_limits, next_time_steps, next_boundaries
             f_beta_score, recall = next_f_beta_score, next_recall
 
-    def evaluate(self, test_x, test_y, output):
-        """Evaluate the defined empirical control limits on the test data.
+    def evaluate(self, test_x, test_y, output_fit):
+        """Evaluating on the testing data
+        
+        :param test_x: test data
+        :type test_x: numpy array
+        :param test_y: test labels
+        :type test_y: numpy array
+        :param output_fit: training output
+        :return: testing output
+        :rtype: dict
+        """
 
-        Args:
-            test_x (numpy array): Test data.
-            test_y (numpy array): Test labels.
-            output (dict): Output fitting.
-
-        Returns:
-            dict: Output evaluation."""
-
-        self.__assert_input(test_x, test_y)
-
+        assert_input(test_x, test_y)
         fn, fp = list(), list()
-        for idx in range(len(output['time_steps'])):
+        for idx in range(len(output_fit['time_steps'])):
             limits = DeriveLimits(test_x, test_y, self.precision_limits, self.length_limits, self.shape_limits)
-            time_steps, boundaries = output['time_steps'][idx], output['boundaries'][idx]
-            predicted_labels = limits.deploy_limits(time_steps, boundaries, predict=True)
-            fp += [self.__return_fp(test_x, test_y, predicted_labels)]
-            fn += [self.__return_fn(test_x, test_y, predicted_labels)]
-            test_x, test_y = self.__deploy(test_x, test_y, predicted_labels)
-        values = [fn, fp, output['time_steps'], output['boundaries']]
+            time_steps, boundaries = output_fit['time_steps'][idx], output_fit['boundaries'][idx]
+            limits_labels = limits.deploy_limits(time_steps, boundaries, predict=True)
+            fp += [self.__return_fp(test_x, test_y, limits_labels)]
+            fn += [self.__return_fn(test_x, test_y, limits_labels)]
+            test_x, test_y = self.__deploy(test_x, test_y, limits_labels)
+        values = [fn, fp, output_fit['time_steps'], output_fit['boundaries']]
         for key, value in zip(self.keys, values):
             self.output_eval[key] = value
         return self.output_eval
 
     def __store_limits(self, time_steps, boundaries):
-        """Add the next specification limits defined.
-
-        Args:
-            time_steps (numpy array): Time steps.
-            boundaries (dict): Decision boundaries."""
-
+        """Store the derived control limits
+        
+        :param time_steps: time-steps control limits
+        :type time_steps: numpy array
+        :param boundaries: decision boundaries
+        :type boundaries: dict
+        """
+        
         self.time_steps += [time_steps]
         self.boundaries += [boundaries]
 
-    def __deploy(self, array, labels, limits_labels):
-        """Update the data and labels according to prediction of specification limits.
-
-        Args:
-            array (numpy array): Input array
-            labels (numpy array): Input labels.
-            limits_labels (numpy array): Predicted labels.
-
-        Returns:
-            tuple: Updated array and labels"""
+    def __apply(self, array, labels, limits_labels):
+        """Apply control limits and return updated data and labels
+        
+        :param array: input data
+        :type array: numpy array
+        :param labels: input labels
+        :type labels: numpy array
+        :param limits_labels: predicted labels
+        :type limits_labels: numpy array
+        :return: updated data and labels
+        :rtype: tuple
+        """
 
         limits_indices_nok = [idx for idx, label in enumerate(limits_labels) if label == self.label_nok]
         return np.delete(array, limits_indices_nok, axis=0), np.delete(labels, limits_indices_nok)

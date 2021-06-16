@@ -182,7 +182,7 @@ class ControlLimits:
             limits_labels = limits.deploy_limits(time_steps, boundaries, predict=True)
             fp += [self.__return_fp(test_x, test_y, limits_labels)]
             fn += [self.__return_fn(test_x, test_y, limits_labels)]
-            test_x, test_y = self.__deploy(test_x, test_y, limits_labels)
+            test_x, test_y = self.__apply(test_x, test_y, limits_labels)
         values = [fn, fp, output_fit['time_steps'], output_fit['boundaries']]
         for key, value in zip(self.keys, values):
             self.output_eval[key] = value

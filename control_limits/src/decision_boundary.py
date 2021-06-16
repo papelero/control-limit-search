@@ -27,6 +27,7 @@ class DecisionBoundary:
         self.labels = labels
         self.time_step = time_step
         self.precision = precision
+        self.inverse_precision = self.__inverse_precision__()
         self.array_time_step = self.__array_time_step__()
         self.label_ok = self.__label_ok__()
         self.median_ok = self.__median_ok__()
@@ -37,6 +38,15 @@ class DecisionBoundary:
 
     def __repr__(self):
         return f'Decision boundaries(time step={self.time_step}, precision={self.precision})'
+
+    def __inverse_precision__(self):
+        """Return the inverse prevision
+
+        :return: inverse user-input precision
+        :rtype: float
+        """
+
+        return 1 - self.precision
 
     def __array_time_step__(self):
         """Return data at current time step
@@ -160,9 +170,6 @@ class DecisionBoundary:
             next_entropy.append(weight * self.__get_entropy(next_class_count[idx], total_next_split[idx]))
         return sum(h for h in next_entropy)
 
-
-    ### --> continue from here
-
     def __split_points(self, array):
         """Return all possible split points
         
@@ -177,7 +184,7 @@ class DecisionBoundary:
         split_points = np.add(sorted_array[:-1], np.divide(np.absolute(sorted_array[1:] - sorted_array[:-1]), 2))
         return np.pad(split_points, (1, 1), 'constant', constant_values=(start_split, end_split))
 
-    def __filter_splits(self, array, labels, precision_limits):
+    def __filter_split_points(self, array, labels, precision_limits):
         """Return only the split points satisfying the user-input
         
         :param array: input data
@@ -194,21 +201,22 @@ class DecisionBoundary:
         threshold = np.quantile(array[labels == self.label_ok], precision_limits)
         mask = splits < threshold if threshold < self.median_ok else threshold < splits
         return splits[mask]
-    
-    # here double check of as currently structured is required! 
-    def optimal_split_point(self, array, labels, **kwargs):
+
+    def optimal_split_point(self, array, labels, precision_limits):
         """Returns the optimal split point
         
         :param array: input data
         :type array: numpy array
         :param labels: input labels
         :type labels: numpy array
+        :param precision_limits: user-input
+        :type precision_limits: float
         :return: optimal split point
         :rtype: float
         """
        
-        split_points = self.__filter_splits(array, labels, kwargs['precision']) if kwargs else self.__split_points(array)
-        info_gain = np.zeros(shape=splits.shape)
+        split_points = self.__filter_split_points(array, labels, precision_limits)
+        info_gain = np.zeros(shape=split_points.shape)
         for idx, split in enumerate(split_points):
             class_count_lower, class_count_upper = list(), list()
             for label in np.unique(labels):
@@ -251,12 +259,12 @@ class DecisionBoundary:
         :rtype: tuple
         """
        
-        split1 = self.optimal_split_point(self.array[:, self.time_step], self.labels, precision=self.precision)
-        split2 = self.optimal_split_point(self.array[:, self.time_step], self.labels, precision=(1 - self.precision))
+        split1 = self.optimal_split_point(self.array[:, self.time_step], self.labels, self.precision)
+        split2 = self.optimal_split_point(self.array[:, self.time_step], self.labels, self.inverse_precision)
         if split1 < split2:
-            return self.__shift_split(split1, pick_split=0), self.__shift_split_point(split2, pick_split=1)
+            return self.__shift_split_point(split1, pick_split=0), self.__shift_split_point(split2, pick_split=1)
         else:
-            return self.__shift_split(split2, pick_split=0), self.__shift_split_point(split1, pick_split=1)
+            return self.__shift_split_point(split2, pick_split=0), self.__shift_split_point(split1, pick_split=1)
 
     def update(self, time_step):
         """Update the current time step

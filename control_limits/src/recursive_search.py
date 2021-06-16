@@ -4,7 +4,22 @@ from .derive_limits import DeriveLimits
 
 
 class ControlLimits:
+    """Recursive search to derive the control limits
+    
+    :param array: input data
+    :type array: numpy array
+    :param labels: input labels
+    :type labels: numpy array
+    :param precision_limits: user-input precision
+    :type precision_limits: float
+    :param length_limits: user-input length
+    :type length_limits: int
+    :param shape_limits: user-input shape
+    :type shape_limits: int
+    """
+    
     def __init__(self, array, labels, precision_limits=0.95, length_limits=8, shape_limits=1):
+        assert_input(array, labels) and assert_params(array, precision_limits, length_limits, shape_limits)
         self.array = array
         self.labels = labels
         self.precision_limits = precision_limits
@@ -24,63 +39,32 @@ class ControlLimits:
                f'shape={self.shape_limits}).'
 
     def __label_ok__(self):
-        """Return the label of the ok distribution.
-
-        Returns:
-            int: Label of the true distribution."""
+        """Return the label of the ok distribution
+        
+        :return: label ok distribution
+        :rtype: int
+        """
 
         return np.unique(self.labels)[0]
 
     def __label_nok__(self):
-        """Return the label of the nok distribution.
-
-        Returns:
-            int: Label of the faulty distribution."""
-
+        """Return the label of the nok distribution
+        
+        :return: label nok distribution
+        :rtype: int
+        """
+        
         return np.unique(self.labels)[-1]
 
     def __output__(self):
-        """Initialize the output.
-
-        Returns:
-            dict: Initialized output dictionary."""
+        """Initialize the output
+        
+        :return: initialized output
+        :rtype: dict
+        """
 
         return {key: [] for key in self.keys}
-
-    @staticmethod
-    def __assert_input(array, labels):
-        """Assert input series and labels.
-
-        Args:
-            array (numpy array): Input data.
-            labels (numpy array): Input labels."""
-
-        if not isinstance(array, np.ndarray) or not isinstance(labels, np.ndarray):
-            raise TypeError('Input series and labels numpy array.')
-        else:
-            if len(array.shape) != 2 or len(labels.shape) != 1:
-                raise ValueError('Input series 2D, input labels 1D')
-            else:
-                if np.unique(labels).size != 2:
-                    raise ValueError('Input labels binary')
-
-    @staticmethod
-    def __assert_params(array, precision_limits, len_limits, shape_limits):
-        """Assert input parameters.
-
-        Args:
-            array (numpy array): Input data.
-            precision_limits (float): User-input precision.
-            len_limits (int): Length of empirical specification limits.
-            shape_limits (int): Shape of the empirical specification limits."""
-
-        if precision_limits < 0.5 or precision_limits > 1.0:
-            raise ValueError('Precision between 0.5 and 1.')
-        elif len_limits <= 1 or len_limits >= array.shape[-1]:
-            raise ValueError('Length of limits larger than 1 and smaller than total time steps.')
-        elif shape_limits < 0 or shape_limits > 1:
-            raise ValueError('Shape 0 if not parallel, 1 if parallel.')
-
+        
     def __return_fp(self, array, labels, predicted_labels):
         """Return the false positive.
 

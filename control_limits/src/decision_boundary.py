@@ -164,51 +164,52 @@ class DecisionBoundary:
     ### --> continue from here
 
     def __split_points(self, array):
-        """Return the possible split values.
-
-        Args:
-            array (numpy array): Input data.
-
-        Returns:
-            numpy array: Split values."""
-
+        """Return all possible split points
+        
+        :param array: input data
+        :type array: numpy array
+        :return: split points
+        :rtype:numpy array
+        """
+        
         sorted_array = np.sort(np.unique(array))
         start_split, end_split = sorted_array[0] - self.offset, sorted_array[-1] + self.offset
-        splits = np.zeros(shape=sorted_array[:-1].size, dtype=np.float32)
-        for idx, arr in enumerate(sorted_array[:-1]):
-            splits[idx] = arr + (abs((sorted_array[idx + 1]) - arr) / 2)
-        return np.pad(splits, (1, 1), 'constant', constant_values=(start_split, end_split))
+        split_points = np.add(sorted_array[:-1], np.divide(np.absolute(sorted_array[1:] - sorted_array[:-1]), 2))
+        return np.pad(split_points, (1, 1), 'constant', constant_values=(start_split, end_split))
 
-    def __filter_splits(self, array, labels, cut_point):
-        """Return only the splits within the user-defined precision value:
-
-        Args:
-            array (numpy array): Input data.
-            labels (numpy array): Input labels.
-            cut_point (float): User-defined precision value.
-
-        Returns:
-            numpy array: Filtered split values."""
+    def __filter_splits(self, array, labels, precision_limits):
+        """Return only the split points satisfying the user-input
+        
+        :param array: input data
+        :type array: numpy array
+        :param labels: input labels
+        :type labels: numpy array
+        :param precision_limits: user-input
+        :type precision_limits: float
+        :return: filtered split points
+        :rtype: numpy array
+        """
 
         splits = self.__split_points(array)
-        threshold = np.quantile(array[labels == self.label_ok], cut_point)
+        threshold = np.quantile(array[labels == self.label_ok], precision_limits)
         mask = splits < threshold if threshold < self.median_ok else threshold < splits
         return splits[mask]
-
+    
+    # here double check of as currently structured is required! 
     def optimal_split_point(self, array, labels, **kwargs):
-        """Returns the optimal split point of the input data.
-
-          Args:
-              array (numpy array): Input y at one time step.
-              labels (numpy array): Input labels.
-              kwargs (float): User-defined precision value.
-
-          Returns:
-              float: Optimum split value."""
-
-        splits = self.__filter_splits(array, labels, kwargs['precision']) if kwargs else self.__split_points(array)
+        """Returns the optimal split point
+        
+        :param array: input data
+        :type array: numpy array
+        :param labels: input labels
+        :type labels: numpy array
+        :return: optimal split point
+        :rtype: float
+        """
+       
+        split_points = self.__filter_splits(array, labels, kwargs['precision']) if kwargs else self.__split_points(array)
         info_gain = np.zeros(shape=splits.shape)
-        for idx, split in enumerate(splits):
+        for idx, split in enumerate(split_points):
             class_count_lower, class_count_upper = list(), list()
             for label in np.unique(labels):
                 class_count_lower.append(array[(labels == label) & (array < split)].size)
@@ -219,18 +220,19 @@ class DecisionBoundary:
 
             next_entropy = self.__get_weighted_entropy(weights, next_class_count)
             info_gain[idx] = self.start_entropy - next_entropy
-        return splits[np.argmax(info_gain)]
+        return split_points[np.argmax(info_gain)]
 
-    def __shift_split(self, split, *, pick_split):
-        """Return global minimum/maximum if labels under/over decision boundary are from true distribution.
-
-        Args:
-            split (float): Split value.
-            pick_split (int): Flag signaling if lower/upper split value.
-
-        Returns:
-            float: Shifted split value."""
-
+    def __shift_split_point(self, split, *, pick_split):
+        """Shift split point to global minimum or maximum if labels under or over decision boundary ok
+        
+        :param split: split point
+        :type split: float
+        :param pick_split: flag to signal if lower or upper split point
+        :type pick_split: int
+        :return: shifted split point
+        :rtype: float
+        """
+        
         if pick_split == ShiftSplit.LOW.value:
             if all(self.labels[self.array_time_step < split] == self.label_ok):
                 return self.min - self.offset
@@ -243,17 +245,18 @@ class DecisionBoundary:
                 return split
 
     def fit(self):
-        """Return second split value.
-
-        Returns:
-            float: Second split value."""
-
+        """Return the decision boundary
+        
+        :return: decision boundary 
+        :rtype: tuple
+        """
+       
         split1 = self.optimal_split_point(self.array[:, self.time_step], self.labels, precision=self.precision)
         split2 = self.optimal_split_point(self.array[:, self.time_step], self.labels, precision=(1 - self.precision))
         if split1 < split2:
-            return self.__shift_split(split1, pick_split=0), self.__shift_split(split2, pick_split=1)
+            return self.__shift_split(split1, pick_split=0), self.__shift_split_point(split2, pick_split=1)
         else:
-            return self.__shift_split(split2, pick_split=0), self.__shift_split(split1, pick_split=1)
+            return self.__shift_split(split2, pick_split=0), self.__shift_split_point(split1, pick_split=1)
 
     def update(self, time_step):
         """Update the current time step

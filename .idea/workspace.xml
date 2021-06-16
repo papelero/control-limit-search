@@ -19,12 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ecc31b03-6b81-4e43-82ed-9fa4a8865bbe" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/decision_boundary.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/decision_boundary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/recursive_search.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/src/recursive_search.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/control_limits/utils.py" afterDir="false" />
-    </list>
+    <list default="true" id="ecc31b03-6b81-4e43-82ed-9fa4a8865bbe" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

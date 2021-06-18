@@ -1,15 +1,9 @@
 import numpy as np
 from enum import Enum
+from ..utils import ShiftSplitPoint
 
 
-class ShiftSplit(Enum):
-    """Signal selecting low or high split value."""
-
-    LOW = 0
-    HIGH = 1
-
-
-class DecisionBoundary:
+class SplitPointSearch:
     """Calculate the decision boundary
 
     :param array: input data

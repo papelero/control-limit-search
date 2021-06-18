@@ -41,13 +41,12 @@ def assert_params(array, precision_limits, len_limits, shape_limits):
     elif shape_limits < 0 or shape_limits > 1:
         raise AssertionError
         
-        
-        
- class RouteLimits(Enum):
-   """Signal which direction to construct the control limits"""
+                
+class RouteLimits(Enum):
+"""Signal which direction to construct the control limits"""
 
-   LEFT = 0
-   RIGHT = 1
+LEFT = 0
+RIGHT = 1
 
 
 class ShiftSplit(Enum):

@@ -42,15 +42,15 @@ def assert_params(array, precision_limits, len_limits, shape_limits):
         raise AssertionError
         
                 
-class RouteLimits(Enum):
-"""Signal which direction to construct the control limits"""
+class GreedySearch(Enum):
+"""Signal seletcing the direction of the greedy search"""
 
-LEFT = 0
-RIGHT = 1
+    LEFT = 0
+    RIGHT = 1
 
 
 class ShiftSplit(Enum):
-    """Signal selecting low or high split value."""
+    """Signal selecting low or high split value"""
 
     LOW = 0
     HIGH = 1
@@ -58,6 +58,7 @@ class ShiftSplit(Enum):
     
 def scale_precision_input(precision_limits, input_min=0.5, input_max=1.0, start_interval=2.0, end_interval=-2.0):
     """Derive beta for f-beta score from user input
+    
     :param precision_limits: user input precision
     :type precision_limits: float
     :param input_min: minimum possible precision

@@ -1,5 +1,4 @@
 import numpy as np
-from enum import Enum
 from ..utils import ShiftSplitPoint
 
 
@@ -235,7 +234,7 @@ class SplitPointSearch:
         :rtype: float
         """
         
-        if pick_split == ShiftSplit.LOW.value:
+        if pick_split == ShiftSplitPoint.LOW.value:
             if all(self.labels[self.array_time_step < split] == self.label_ok):
                 return self.min - self.offset
             else:

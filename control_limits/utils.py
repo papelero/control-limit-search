@@ -43,14 +43,14 @@ def assert_params(array, precision_limits, len_limits, shape_limits):
         
                 
 class GreedySearch(Enum):
-"""Signal seletcing the direction of the greedy search"""
+    """Signal selecting the direction of the greedy search"""
 
     LEFT = 0
     RIGHT = 1
 
 
-class ShiftSplit(Enum):
-    """Signal selecting low or high split value"""
+class ShiftSplitPoint(Enum):
+    """Signal selecting low or high split point"""
 
     LOW = 0
     HIGH = 1
@@ -88,10 +88,10 @@ def euc_distance(array_ref, array):
     :rtype: float
     """
 
-    euc_distance = float(0)
+    dist = float(0)
     for i, j in zip(array_ref, array):
-        euc_distance += np.sqrt((i - j) ** 2)
-    return euc_distance
+        dist += np.sqrt((i - j) ** 2)
+    return dist
 
 
 def linear_regression(time_steps, dec_boundary):

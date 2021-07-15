@@ -2,7 +2,8 @@ import numpy as np
 from enum import Enum
 from .max_class_separability import StatisticalDistance
 from .stat_analysis_limits import StatisticalAnalysis
-from .decision_boundary import DecisionBoundary
+from.greedy_search import GreedySearchLimits
+# from .decision_boundary import DecisionBoundary
 
 
 class SearchRoute(Enum):

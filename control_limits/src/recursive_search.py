@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import confusion_matrix
-from .derive_limits import DeriveLimits
+# from .derive_limits import DeriveLimits
+from .greedy_search import GreedySearchLimits
 from ..utils import assert_input, assert_params
 
 
@@ -133,8 +134,8 @@ class ControlLimits:
         :rtype: dict
         """
 
-        limits = DeriveLimits(self.array, self.labels, self.precision_limits, self.length_limits, self.shape_limits)
-        labels_limits, time_steps, boundaries = limits.derive(predict=True)
+        limits = GreedySearchLimits(self.array, self.labels, self.precision_limits, self.length_limits, self.shape_limits)
+        labels_limits, time_steps, boundaries = limits.fit()
         f_beta_score, recall = limits.f_beta_score(), limits.recall
         fn, fp = list(), list()
         while True:
@@ -148,9 +149,9 @@ class ControlLimits:
                 return self.output_fit
             else:
                 self.array, self.labels = self.__apply(self.array, self.labels, labels_limits)
-                next_limits = DeriveLimits(self.array, self.labels, self.precision_limits, self.length_limits,
+                next_limits = GreedySearchLimits(self.array, self.labels, self.precision_limits, self.length_limits,
                                            self.shape_limits)
-                next_labels_limits, next_time_steps, next_boundaries = next_limits.derive(predict=True)
+                next_labels_limits, next_time_steps, next_boundaries = next_limits.fit()
                 next_f_beta_score, next_recall = next_limits.f_beta_score(), next_limits.recall
                 if next_f_beta_score <= f_beta_score:
                     fp += [self.__return_fp(self.array, self.labels, labels_limits)]
@@ -177,9 +178,9 @@ class ControlLimits:
         assert_input(test_x, test_y)
         fn, fp = list(), list()
         for idx in range(len(output_fit['time_steps'])):
-            limits = DeriveLimits(test_x, test_y, self.precision_limits, self.length_limits, self.shape_limits)
+            limits = GreedySearchLimits(test_x, test_y, self.precision_limits, self.length_limits, self.shape_limits)
             time_steps, boundaries = output_fit['time_steps'][idx], output_fit['boundaries'][idx]
-            limits_labels = limits.deploy_limits(time_steps, boundaries, predict=True)
+            limits_labels = limits.fit_limits(time_steps, boundaries, predict=True)
             fp += [self.__return_fp(test_x, test_y, limits_labels)]
             fn += [self.__return_fn(test_x, test_y, limits_labels)]
             test_x, test_y = self.__apply(test_x, test_y, limits_labels)

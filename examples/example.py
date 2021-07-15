@@ -6,7 +6,7 @@ sys.path.append('\\'.join(path))
 
 from examples.data_example import ExampleSeries
 from control_limits.src import ControlLimits
-from control_limits.utils import plot_limits
+from control_limits.vis import plot_limits
 
 
 def main():

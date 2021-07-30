@@ -39,7 +39,7 @@ class StatisticalDistance:
             emp_cdf_total[idx] = emp_cdf
         return emp_cdf_total
 
-    def compute_stat_distance(self):
+    def compute_distance(self):
         """Calculate the total variation distance
 
         :return: total variation distance
@@ -56,11 +56,11 @@ class StatisticalDistance:
             distance[idx] = scale_factor * sum(abs(emp_cdf[0] - emp_cdf[1]))
         return distance
 
-    def extract_start_time_step(self):
+    def get_start_time_step(self):
         """Calculate the time-step of largest class separability
 
         :return: time-step of maximum class separability
         :rtype: int
         """
 
-        return np.argmax(self.compute_stat_distance())
+        return np.argmax(self.compute_distance())

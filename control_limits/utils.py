@@ -42,7 +42,7 @@ def assert_params(array, precision_limits, len_limits, shape_limits):
         raise AssertionError
         
                 
-class GreedySearch(Enum):
+class GreedySearchPath(Enum):
     """Signal selecting the direction of the greedy search"""
 
     LEFT = 0
@@ -54,27 +54,36 @@ class ShiftSplitPoint(Enum):
 
     LOW = 0
     HIGH = 1
+
     
-    
-def scale_precision_input(precision_limits, input_min=0.5, input_max=1.0, start_interval=2.0, end_interval=-2.0):
-    """Derive beta for f-beta score from user input
-    
-    :param precision_limits: user input precision
-    :type precision_limits: float
+class ScalePrecision(object):
+    """Return the beta for f-beta score
+
     :param input_min: minimum possible precision
     :type input_min: float
     :param input_max: maximum possible precision
     :type input_max: float
-    :param start_interval: start of transformed interval
-    :type start_interval: float
-    :param end_interval: end of transformed interval
-    :type end_interval: float
-    :return: f-beta score
-    :rtype: float
+    :param start: start of transformed interval
+    :type start: float
+    :param end: end of transformed interval
+    :type end: float
     """
+    def __init__(self, input_min=0.5, input_max=1.0, start=2.0, end=-2.0):
+        self.min = input_min
+        self.max = input_max
+        self.start = start
+        self.end = end
 
-    scaling_factor = (end_interval - start_interval)
-    return scaling_factor * ((precision_limits - input_min) / (input_max - input_min)) + start_interval
+    def __call__(self, precision_limits):
+        """Return the beta for f-beta score given the precision of the control limits
+
+        :param precision_limits: user input precision
+        :type precision_limits: float
+        :return: f-beta score
+        :rtype: float
+        """
+        scaling_factor = (self.end - self.start)
+        return scaling_factor * ((precision_limits - self.min) / (self.max - self.min)) + self.start
 
 
 def euc_distance(array_ref, array):

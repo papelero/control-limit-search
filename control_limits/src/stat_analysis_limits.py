@@ -1,25 +1,5 @@
 from sklearn.metrics import confusion_matrix
-
-
-def scale_precision_input(precision_limits, input_min=0.5, input_max=1.0, start_interval=2.0, end_interval=-2.0):
-    """Derive beta for f-beta score from user input
-
-    :param precision_limits: user input precision
-    :type precision_limits: float
-    :param input_min: minimum possible precision
-    :type input_min: float
-    :param input_max: maximum possible precision
-    :type input_max: float
-    :param start_interval: start of transformed interval
-    :type start_interval: float
-    :param end_interval: end of transformed interval
-    :type end_interval: float
-    :return: f-beta score
-    :rtype: float
-    """
-
-    scaling_factor = (end_interval - start_interval)
-    return scaling_factor * ((precision_limits - input_min) / (input_max - input_min)) + start_interval
+from ..utils import ScalePrecision
 
 
 class StatisticalAnalysis:
@@ -49,7 +29,8 @@ class StatisticalAnalysis:
         :rtype: float
         """
 
-        return 10 ** scale_precision_input(self.precision_limits)
+        scaling = ScalePrecision()
+        return 10 ** scaling(self.precision_limits)
 
     @property
     def precision(self):

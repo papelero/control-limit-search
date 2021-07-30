@@ -44,13 +44,8 @@ def plot_limits(x_train, x_test, y_train, y_test, output_train, output_test):
     axs[0].set_xlabel('$X$', fontsize=7)
     axs[0].set_ylabel('$Y$', fontsize=7)
     axs[0].set_title('Training', fontsize=7)
-    xmin, xmax = axs[0].get_xaxis().get_view_interval()
-    ymin, ymax = axs[0].get_yaxis().get_view_interval()
-    axs[0].set_xlim([xmin, xmax])
-    axs[0].set_xticks(np.round(np.linspace(xmin, xmax, 3)))
-    axs[0].set_ylim([ymin, ymax])
-    axs[0].set_yticks(np.round(np.linspace(ymin, ymax, 3)))
-    axs[0].tick_params(axis='both', labelsize=7)
+    axs[0].set_xticks([])
+    axs[0].set_yticks([])
     handles, labels = axs[0].get_legend_handles_labels()
     unique = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
     if len(unique) != 0:
@@ -81,14 +76,8 @@ def plot_limits(x_train, x_test, y_train, y_test, output_train, output_test):
         axs[1].fill_between(time_steps[i], boundaries[i][0], boundaries[i][1], facecolor='navy', alpha=0.25)
     axs[1].set_xlabel('$X$', fontsize=7)
     axs[1].set_title('Testing', fontsize=7)
-    xmin, xmax = axs[1].get_xaxis().get_view_interval()
-    ymin, ymax = axs[1].get_yaxis().get_view_interval()
-    axs[1].set_xlim([xmin, xmax])
-    axs[1].set_xticks(np.round(np.linspace(xmin, xmax, 3)))
-    axs[1].set_ylim([ymin, ymax])
-    axs[1].set_yticks(np.round(np.linspace(ymin, ymax, 3)))
-    axs[1].set_yticklabels([])
-    axs[1].tick_params(axis='both', labelsize=7)
+    axs[1].set_xticks([])
+    axs[1].set_yticks([])
     handles, labels = axs[1].get_legend_handles_labels()
     unique = [(h, l) for i, (h, l) in enumerate(zip(handles, labels)) if l not in labels[:i]]
     axs[1].legend(*zip(*unique),

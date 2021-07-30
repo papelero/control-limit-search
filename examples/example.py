@@ -14,6 +14,11 @@ def main():
 
     x_train, x_test, y_train, y_test = ExampleSeries().generate(return_X_y=True)
 
+    import matplotlib.pyplot as plt
+    plt.plot(x_train[y_train == 1, :].T, color='darkgreen')
+    plt.plot(x_train[y_train == 2, :].T, color='darkred')
+    plt.show()
+
     clf = ControlLimits(x_train, y_train)
     output_train = clf.fit()
     train_acc = clf.accuracy(x_train, y_train, output_train)

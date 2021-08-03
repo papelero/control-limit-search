@@ -12,7 +12,7 @@ For using the package, please read [Instructions](#instructions).
 ## Installation
 
 Install the package using the following instructions:
-1. Clone the repository to download the source distribution ([https://github.com/tomaselli96/control_limits.git](https://github.com/tomaselli96/control_limits.git)).
+1. Clone the repository to download the source distribution ([https://github.com/papelero/control-limit-search.git](https://github.com/papelero/control-limit-search.git)).
 2. Access the root directory where ```setup.py``` is located.
 3. Run the following commands in the terminal (Linux) or command prompt window (Windows):
   ```python

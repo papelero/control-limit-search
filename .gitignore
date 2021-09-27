@@ -6,6 +6,7 @@ eggs/
 lib/
 lib64/
 sdist/
+.idea/
 *.egg-info
 *.egg
 .installed.cfg

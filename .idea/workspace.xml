@@ -20,10 +20,52 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ecc31b03-6b81-4e43-82ed-9fa4a8865bbe" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/control_limits/src/decision_boundary.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/derive_limits.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/greedy_search.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/control_limits/src/recursive_search.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/.idea/ChinaTown.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown_TEST.arff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown_TEST.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown_TEST.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown_TRAIN.arff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown_TRAIN.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/Chinatown_TRAIN.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/chinatown/data_loader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung_TEST.arff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung_TEST.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung_TEST.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung_TRAIN.arff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung_TRAIN.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/GunPointOldVersusYoung_TRAIN.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/datasets/gunpoint_oldversusyoung/data_loader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/greedy_search_limits.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/max_class_separability.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/recursive_search_limits.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/split_points_search.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/src/stat_analysis_limits.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/utils.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/control_limits/vis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/.ipynb_checkpoints/greedy_search-checkpoint.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/data_example.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/example.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/greedy_search.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +92,33 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
-  <component name="RunManager" selected="Python.example">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Domenico Tomaselli\control-limit-search" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.example (1)">
+    <configuration name="example (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="control-limit-search" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/example" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/example/example.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="example" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="control-limit-search" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -95,6 +163,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.example (1)" />
         <item itemvalue="Python.example" />
         <item itemvalue="Python.greedy_search" />
       </list>

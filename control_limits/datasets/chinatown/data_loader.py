@@ -1,65 +1,54 @@
-import numpy as np
-import arff
 import os
-import pkg_resources
+import arff
+
+import numpy as np
 
 
-def load_train():
-    """From current path load the train y.
+def load_train_data():
+    """Loading the train set:
 
-    Returns:
-        numpy array: Train y and labels.
+    :return: train set with data and labels
     """
 
-    for item in pkg_resources.resource_listdir('control_limits', 'datasets/chinatown'):
-        if '_TRAIN.arff' in item:
-            path = pkg_resources.resource_filename('control_limits', 'datasets/chinatown')
-            dataset = arff.load(open(os.path.join(path, item), 'rt'))
-            return np.array(dataset['data'])
+    path = os.getcwd().split("/")[:-1] + ["control_limits"] + ["datasets"] + ["chinatown"]
+    path = "/".join(path)
+    for item in os.listdir(path):
+        if "TRAIN" in item:
+            train_set = arff.load(open(os.path.join(path, item), "rt"))
+            return np.asarray(train_set["data"])
 
 
-def load_test():
-    """From current path load the test y.
+def load_test_data():
+    """Loading the test set:
 
-    Returns:
-        numpy array: Test y and labels.
+    :return: test set with data and labels
     """
 
-    for item in pkg_resources.resource_listdir('control_limits', 'datasets/chinatown'):
-        if '_TEST.arff' in item:
-            path = pkg_resources.resource_filename('control_limits', 'datasets/chinatown')
-            dataset = arff.load(open(os.path.join(path, item), 'rt'))
-            return np.array(dataset['data'])
+    path = os.getcwd().split("/")[:-1] + ["control_limits"] + ["datasets"] + ["chinatown"]
+    path = "/".join(path)
+    for item in os.listdir(path):
+        if "TEST" in item:
+            test_set = arff.load(open(os.path.join(path, item), "rt"))
+            return np.asarray(test_set["data"])
 
 
-def load_data(return_X_y=True):
-    """Reshape the train and test y into two-dimensional arrays and separate y from labels.
+def load_data():
+    """Format the train and test data as well as the labels"""
 
-    Args:
-        return_X_y (bool): Flag to signal whether to return the y and labels.
+    train_data_raw = load_train_data()
+    train_data = np.zeros(shape=(len(train_data_raw), len(train_data_raw[0]) - 1), dtype=np.float32)
+    train_labels = np.zeros(shape=(len(train_data_raw), ), dtype=np.int8)
+    for di, instance in enumerate(train_data_raw):
+        train_data[di], train_labels[di] = instance[:-1], instance[-1]
 
-    Returns:
-        numpy array: Train y.
-        numpy array: Test y.
-        numpy array: Train labels.
-        numpy array: Test labels.
-    """
+    test_data_raw = load_test_data()
+    test_data = np.zeros(shape=(len(test_data_raw), len(test_data_raw[0]) - 1), dtype=np.float32)
+    test_labels = np.zeros(shape=(len(test_data_raw), ), dtype=np.int8)
+    for di, instance in enumerate(test_data_raw):
+        test_data[di], test_labels[di] = instance[:-1], instance[-1]
 
-    # Train data and labels
-    load_train_data = load_train()
-    train_data = np.zeros(shape=(len(load_train_data), len(load_train_data[0]) - 1))
-    train_labels = np.zeros(shape=(len(load_train_data),), dtype=np.int8)
-    for ind in range(len(load_train_data)):
-        train_data[ind, :] = load_train_data[ind][:-1]
-        train_labels[ind] = load_train_data[ind][-1]
+    return train_data, test_data, train_labels, test_labels
 
-    # Test data and labels
-    load_test_data = load_test()
-    test_data = np.zeros(shape=(len(load_test_data), len(load_test_data[0]) - 1))
-    test_labels = np.zeros(shape=(len(load_test_data),), dtype=np.int8)
-    for ind in range(len(load_test_data)):
-        test_data[ind, :] = load_test_data[ind][:-1]
-        test_labels[ind] = load_test_data[ind][-1]
 
-    if return_X_y:
-        return train_data, test_data, train_labels, test_labels
+if __name__ == "__main__":
+    load_train_data()

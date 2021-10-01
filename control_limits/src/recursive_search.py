@@ -32,6 +32,8 @@ class ControlLimits(object):
         :return: accuracy
         """
 
+        # Set the predicted labels to 1 for the data that is entirely included within the control limits, otherwise set
+        # the predicted labels to 2
         predicted_labels = np.ones(shape=labels.shape, dtype=np.int8)
         for di in range(len(output["time_steps"])):
             data_time_step = data[:, output["time_steps"][di]]
@@ -40,6 +42,8 @@ class ControlLimits(object):
                 indices_nok = np.where(np.logical_or(data_time_step[:, t] < output["control_limits"][di][0][t],
                                                      data_time_step[:, t] > output["control_limits"][di][1][t]))
             predicted_labels[indices_nok] = np.unique(labels)[-1]
+
+        # Access all values from the confusion matrix
         tn, fp, fn, tp = confusion_matrix(labels, predicted_labels).ravel()
         return round((tn + tp) / (tn + fp + fn + tp), 2)
 
@@ -53,6 +57,7 @@ class ControlLimits(object):
         :return: updated data and labels
         """
 
+        # Get the indices for each curve classified as nok by the control limits and delete it
         predicted_labels_nok = [di for di, label in enumerate(predicted_labels) if label == np.unique(labels)[-1]]
         return np.delete(data, predicted_labels_nok, axis=0), np.delete(labels, predicted_labels_nok)
 
@@ -65,13 +70,24 @@ class ControlLimits(object):
         """
 
         train_time_steps, train_control_limits, false_negative, false_positive = [], [], [], []
+
+        # Define the instance for the greedy search
         search = GreedySearch(data, labels, self.precision_limits, self.length_limits, self.shape_limits)
+
+        # Per greedy search determine the first control limits, its time steps and predicted labels
         time_steps, control_limits, pred_labels = search.solve()
+
+        # Calculate the f-beta score of the first control limits
         _, (precision, recall) = search.labels_and_accuracy(time_steps, control_limits)
         score = search.f_beta_score(precision, recall)
+
+        # Initialize the recursive search
         while True:
             train_time_steps += [time_steps]
             train_control_limits += [control_limits]
+
+            # If the recall is one (i.e., all nok are detected) return the control limits and the resulting false
+            # positive and negative
             if recall == float(1):
                 false_negative += [get_false_negative(data, labels, pred_labels)]
                 false_positive += [get_false_positive(data, labels, pred_labels)]
@@ -81,12 +97,21 @@ class ControlLimits(object):
                 for key, value in zip(self.keys, values):
                     train_output[key] = value
                 return train_output
+
+            # If not all nok are detected, define additional control limits
             else:
+
+                # Update the data and labels by deleting all detected nok
                 data, labels = self.update_data_labels(data, labels, pred_labels)
+
+                # Define the next instance of the greedy search
                 search = GreedySearch(data, labels, self.precision_limits, self.length_limits, self.shape_limits)
                 next_time_steps, next_control_limits, next_pred_labels = search.solve()
                 _, (next_precision, next_recall) = search.labels_and_accuracy(next_time_steps, next_control_limits)
                 next_score = search.f_beta_score(next_precision, next_recall)
+
+                # If the score of the next control limit is equal or worse the previous, do not consider the next
+                # control limits and return the results up to this point.
                 if next_score <= score:
                     false_negative += [get_false_negative(data, labels, pred_labels)]
                     false_positive += [get_false_positive(data, labels, pred_labels)]
@@ -111,6 +136,8 @@ class ControlLimits(object):
 
         false_negative, false_positive = [], []
         search = GreedySearch(data, labels, self.precision_limits, self.length_limits, self.shape_limits)
+
+        # Apply the control limits determined using the train data on the test data
         for di in range(len(output["time_steps"])):
             predicted_labels, _ = search.labels_and_accuracy(output["time_steps"][di], output["control_limits"][di])
             false_negative += [get_false_negative(data, labels, predicted_labels)]

@@ -38,9 +38,15 @@ class StatisticalDistance:
 
         dist = np.empty(shape=(self.data.shape[-1],))
         for di, instance in enumerate(self.data.T):
+
+            # Define the data for evaluating the ECDF
             data_eval = np.linspace(np.min(instance), np.max(instance), self.data.shape[0])
+
+            # Compute the ECDF for each label
             emp_cdf = {label: None for label in np.unique(self.labels)}
             for label in np.unique(self.labels):
                 emp_cdf[label] = self.empirical_cdf(data_eval, instance[self.labels == label])
+
+            # Compute the total variation distance between the ECDFs of each label
             dist[di] = 0.5 * sum(abs(emp_cdf[np.unique(self.labels)[0]] - emp_cdf[np.unique(self.labels)[-1]]))
         return dist, np.argmax(dist)

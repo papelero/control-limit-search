@@ -48,8 +48,14 @@ class DecisionBoundary(object):
         """
 
         data_sorted = np.sort(np.unique(data))
+
+        # Starting split point before the data
         split_start = data_sorted[0] - np.abs(np.mean(np.diff(data)))
+
+        # Final split point exceeding the data
         split_end = data_sorted[-1] + np.abs(np.mean(np.diff(data)))
+
+        # Calculate the split point and pad at the start and end with starting and final split point
         split_points = np.add(data_sorted[:-1], np.divide(np.absolute(data_sorted[1:] - data_sorted[:-1]), 2))
         return np.pad(split_points, (1, 1), 'constant', constant_values=(split_start, split_end))
 
@@ -110,17 +116,30 @@ class DecisionBoundary(object):
         :return: optimal split point
         """
 
+        # Determine the starting entropy
         start_entropy = self.start_entropy(data)
+
+        # Filter split points according to the desired precision
         split_points_filtered = self.filter_split_points(data, precision, args)
+
+        # Determine the information gain considering only the spit point available
         info_gain = np.zeros(shape=split_points_filtered.shape)
         for idx, split_point in enumerate(split_points_filtered):
             data_each_label_below, data_each_label_above = [], []
+
+            # Determine the size of the data below/above the split point for each label
             for label in np.unique(self.labels):
                 data_each_label_below += [len(data[np.logical_and(self.labels == label, data < split_point)])]
                 data_each_label_above += [len(data[np.logical_and(self.labels == label, split_point < data)])]
+
+            # Calculate the weights based on the size of the data
             weights = sum(data_each_label_below) / len(self.labels), sum(data_each_label_above) / len(self.labels)
             next_data_each_label = (data_each_label_below, data_each_label_above)
+
+            # Calculate the entropy of the splitting event
             next_entropy = self.next_entropy(weights, next_data_each_label)
+
+            # Determine the information gain of the splitting event
             info_gain[idx] = start_entropy - next_entropy
         return split_points_filtered[np.argmax(info_gain)]
 
@@ -136,11 +155,17 @@ class DecisionBoundary(object):
         split_points = self.split_points(data)
         median_ok = np.median(data[self.labels == self.label_ok])
         threshold = np.quantile(data[self.labels == self.label_ok], precision)
+
+        # Utilize the available split point to determine where the next split point is located. This is mandatory for
+        # the case the desired precision for the control limits is 0.5 because the threshold is that case also the
+        # median and the distinction is ambiguous.
         if args[0]:
             if args[0] < median_ok:
                 return split_points[threshold < split_points]
             else:
                 return split_points[split_points < threshold]
+
+        # Determine the next split point using desired precision for the control limits
         else:
             if threshold < median_ok:
                 return split_points[split_points < threshold]
@@ -174,10 +199,14 @@ class DecisionBoundary(object):
         :return: split points at the current time step
         """
 
+        # Access the local data at the desired time step
         data_time_step = self.data[:, time_step]
 
+        # Determine the two split points
         split_point1 = self.optimal_split_point(data_time_step, self.precision)
         split_point2 = self.optimal_split_point(data_time_step, self.precision_reversed, split_point1)
+
+        # Check if split points can be shifted to the global minimum and maximum and return the output
         if split_point1 < split_point2:
             split_point1_shifted = self.shift_optimal_split_point(data_time_step, split_point1, 0)
             split_point2_shifted = self.shift_optimal_split_point(data_time_step, split_point2, 1)

@@ -35,12 +35,14 @@ def load_test_data():
 def load_data():
     """Format the train and test data as well as the labels"""
 
+    # Load the raw train data and separate into train data and labels
     train_data_raw = load_train_data()
     train_data = np.zeros(shape=(len(train_data_raw), len(train_data_raw[0]) - 1), dtype=np.float32)
     train_labels = np.zeros(shape=(len(train_data_raw), ), dtype=np.int8)
     for di, instance in enumerate(train_data_raw):
         train_data[di], train_labels[di] = instance[:-1], instance[-1]
 
+    # Load the raw test data and separate into test data and labels
     test_data_raw = load_test_data()
     test_data = np.zeros(shape=(len(test_data_raw), len(test_data_raw[0]) - 1), dtype=np.float32)
     test_labels = np.zeros(shape=(len(test_data_raw), ), dtype=np.int8)

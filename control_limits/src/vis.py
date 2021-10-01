@@ -15,15 +15,27 @@ def plot_control_limits(train_data, test_data, train_labels, test_labels, traini
 
     fig, axs = plt.subplots(1, 2, figsize=(5.512, 2.168))
 
+    # Working with the train data
+    # Plot the normal data
     axs[0].plot(train_data[train_labels == 1, :].T, color='darkgreen', lw=0.5, alpha=0.1, zorder=0)
+
+    # Access control limits and its time steps
     time_steps, control_limits = training_output["time_steps"], training_output["control_limits"]
+
+    # Access the resulting false positive and false negative
     data_false_negative, data_false_positive = training_output["false_negative"], training_output["false_positive"]
+
+    # Plot the false positive
     for false_positive in data_false_positive[0]:
         if false_positive.size != 0:
             axs[0].plot(false_positive, color='darkred', lw=0.5, label='FP')
+
+    # Plot the false negative
     for false_negative in data_false_negative[0]:
         if false_negative.size != 0:
             axs[0].plot(false_negative, color='darkgreen', lw=0.5, ls='--', label='FN')
+
+    # Plot the control limits
     for i in range(len(time_steps)):
         axs[0].plot(time_steps[i], control_limits[i][0], color='navy', ls='--', lw=0.8, zorder=2)
         axs[0].plot([time_steps[i][0], time_steps[i][0]], [control_limits[i][0][0], control_limits[i][1][0]],
@@ -48,15 +60,27 @@ def plot_control_limits(train_data, test_data, train_labels, test_labels, traini
                       edgecolor='white',
                       facecolor='white')
 
+    # Working with the test data
+    # Plot the normal data
     axs[1].plot(test_data[test_labels == 1, :].T, color='darkgreen', lw=0.5, alpha=0.1, zorder=0)
+
+    # Access control limits and its time steps
     time_steps, control_limits = testing_output["time_steps"], testing_output["control_limits"]
+
+    # Access the resulting false positive and false negative
     data_false_negative, data_false_positive = testing_output["false_negative"], testing_output["false_positive"]
+
+    # Plot the false positive
     for false_positive in data_false_positive[0]:
         if false_positive.size != 0:
             axs[1].plot(false_positive, color='darkred', lw=0.5, label='FP')
+
+    # Plot the false negative
     for false_negative in data_false_negative[0]:
         if false_negative.size != 0:
             axs[1].plot(false_negative, color='darkgreen', lw=0.5, ls='--', label='FN')
+
+    # Plot the control limits
     for i in range(len(time_steps)):
         axs[1].plot(time_steps[i], control_limits[i][0], color='navy', ls='--', lw=0.8, zorder=2)
         axs[1].plot([time_steps[i][0], time_steps[i][0]], [control_limits[i][0][0], control_limits[i][1][0]],

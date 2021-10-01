@@ -85,9 +85,16 @@ class SyntheticDataGenerator(object):
         :return: synthetic data
         """
 
+        # To generate the normal data
         if data_type == DataType.NORMAL.value:
+
+            # Define the values for x
             x = np.linspace(-1, 1, self.num_time_steps)
+
+            # Generate the shift to be added at each curve
             added_shift = self.added_shift()
+
+            # Generate the normal data
             normal_data = np.zeros((self.num_data, self.num_time_steps), dtype=np.float32)
             for di in range(self.num_data):
                 normal_data[di] = np.add(np.add(x, self.added_noise), added_shift[di])
@@ -95,6 +102,8 @@ class SyntheticDataGenerator(object):
         else:
             x = np.linspace(-5, 5, self.num_time_steps)
             added_shift = self.added_shift()
+
+            # Generate the anomaly data
             anomaly_data = np.zeros((self.num_data, self.num_time_steps), dtype=np.float32)
             for di in range(self.num_data):
                 anomaly_data[di] = np.add(np.add(np.sin(x), self.added_noise), added_shift[di])

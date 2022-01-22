@@ -35,13 +35,13 @@ class StatisticalDistance:
 
         :return: total variation distance and time step of maximum class separability
         """
+        
+        # Define the data for evaluating the ECDF
+        data_eval = np.linspace(np.min(self.data), np.max(self.data), self.data.shape[0])
 
         dist = np.empty(shape=(self.data.shape[-1],))
         for di, instance in enumerate(self.data.T):
-
-            # Define the data for evaluating the ECDF
-            data_eval = np.linspace(np.min(instance), np.max(instance), self.data.shape[0])
-
+            
             # Compute the ECDF for each label
             emp_cdf = {label: None for label in np.unique(self.labels)}
             for label in np.unique(self.labels):

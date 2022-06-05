@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "control-limits-search"
+version = "0.1.0"
+description = "Automated search of process control limits for fault detection in time series data"
+authors = ["Domenico Tomaselli <domenico.tomaselli13@gmail.com>"]
+maintainers = ["Domenico Tomaselli <domenico.tomaselli13@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/papelero/control-limit-search"
+keywords = ["process control", "control limits", "fault detection", "time series classification"]
+packages = [
+  {include="datasets"},
+  {include="plotting"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+numpy = "^1.22.4"
+sklearn = "^0.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

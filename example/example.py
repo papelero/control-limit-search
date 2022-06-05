@@ -1,25 +1,24 @@
-from control_limits.datasets.synthetic_data import load_data
-from control_limits import ControlLimits, plot_control_limits
+# -*- coding: utf-8 -*-
+# !/usr/bin/env python3
 
+import os
+
+import datasets.chinatown as chinatown
+import control_limits_search
+import plotting.plot as plot
 
 if __name__ == "__main__":
-    # Load data benchmark dataset
-    train_data, test_data, train_labels, test_labels = load_data()
 
-    # Training of the control limits
-    # Initialize the classifier
-    clf = ControlLimits(precision_limits=0.75, length_limits=2, shape_limits=1)
+    # Load the data
+    x_train, x_test, y_train, y_test = chinatown.load_data()
 
-    training_output = clf.train(train_data, train_labels)
-    train_acc = clf.accuracy(train_data, train_labels, training_output)
-    print(f'Training...\n'
-          f'--> Accuracy: {train_acc}')
+    # Initialize and search for the control limits on the train data
+    cl = control_limits_search.ControlLimitsSearch(cl_precision=1.0, cl_len=2, cl_shape=1)
+    train_pred = cl.train(x_train, y_train)
 
-    # Testing of the control limits
-    testing_output = clf.test(test_data, test_labels, training_output)
-    test_acc = clf.accuracy(test_data, test_labels, testing_output)
-    print(f'Testing...\n'
-          f'--> Accuracy: {test_acc}')
+    # Test the control limits
+    test_pred = cl.test(x_test, y_test, train_pred)
 
-    # Visualize the output
-    plot_control_limits(train_data, test_data, train_labels, test_labels, training_output, testing_output)
+    # Plot the outcome
+    filename = os.path.join(os.getcwd(), "example.pdf")
+    plot.cl_plot(x_train, x_test, y_train, y_test, train_pred, test_pred, filename=filename)

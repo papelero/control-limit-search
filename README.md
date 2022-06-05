@@ -1,28 +1,40 @@
-# Automated search of process control limits for fault detection in time series data 
+# To do.
 
 ## Introduction
+To do.
 
-This GitHub repo is a stand-alone package that uses statistical/information theory techniques to automate the search 
-of optimal control limits for fault detection in time series data. 
-It has been successfully employed in the automotive industry to perform fault detection in tightening process data.
+For installing the package, please read [Installation](#installation)
 
-Although the algorithm was inspired by applications in the automotive industry, it can be applied for the traditional 
-time series classification tasks. 
+For using the package, please read [Instructions](#instructions)
 
-For the installation of the package, please read [Installation](#installation).
+For contributing, please read the [contribution guide](CONTRIBUTING.md).
 
-For using the package, please read [Instructions](#instructions).
+## Installation 
+> **_NOTE:_** You may skip these steps if you have already performed them.
 
-## Installation
-
-Install the package using the following instructions:
-1. Clone the repository to download the source distribution ([https://github.com/tomaselli96/control_limits](https://github.com/tomaselli96/control_limits)).
-2. Access the root directory where ```setup.py``` is located.
-3. Run the following commands in the terminal (Linux/Mac) or command prompt window (Windows):
-  ```python
-  python setup.py install
-  pip install -r requirements.txt
-  ```
+1) Install [Poetry](https://python-poetry.org):
+```
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+```
+2) Configure Poetry to not create a new virtual environment, instead reuse the Conda environment:
+```
+$ poetry config virtualenvs.create 0
+```
+3) Create a virtual environment using Python's builtin venv:
+```
+$ python -m venv .venv 
+$ source .venv/bin/activate
+```
+or using Conda: 
+```
+conda create -n ENV_NAME python=X.Y
+conda activate ENV_NAME
+```
+5) Install runtime and development dependencies:
+```
+$ poetry install 
+```
+6) Once the package is sucessfully installed, follow the instructions for the proper usage.
 
 ## Instructions
 
@@ -41,36 +53,45 @@ see [https://timeseriesclassification.com/description.php?Dataset=Chinatown](htt
 2. *Gunpoint Old versus Young* originates from the surveillance domain and is a remake of the popular *Gunpoint* dataset. 
 For more information, see [https://timeseriesclassification.com/description.php?Dataset=GunPointOldVersusYoung](https://timeseriesclassification.com/description.php?Dataset=GunPointOldVersusYoung). 
 
-3. *Synthetic data* is a dataset generated artificially for demonstration and testing purposes. Nevertheless, we
-added it to the list of available datasets and it can be utilized as the previous two. 
+3. *Freezer Small Train* includes data from 20 households from Loughborough area over the period 2013-2014. 
+For more information, see [https://timeseriesclassification.com/description.php?Dataset=FreezerSmallTrain](https://timeseriesclassification.com/description.php?Dataset=FreezerSmallTrain).
+
+4. *SonyAIBORobotSurface1* includes data from a robot that has roll, pitch and yaw accelerometers.  
+For more information, see [https://timeseriesclassification.com/description.php?Dataset=SonyAIBORobotSurface1](https://timeseriesclassification.com/description.php?Dataset=SonyAIBORobotSurface1). 
 
 Use the following to access the chinatown dataset:
    ```python
-   from control_limits.datasets.chinatown import load_data
+   import datasets.chinatown as chinatown
    
-   train_data, test_data, train_labels, test_labels = load_data()
+   x_train, x_test, y_train, y_test = chinatown.load_data()
    ```
 
 Use the following to access the gunpoint old versus young dataset use:
    ```python
-   from control_limits.datasets.gunpoint_oldversusyoung import load_data
+   import datasets.gunpoint_oldversusyoung as gunpoint_oldversusyoung
    
-   train_data, test_data, train_labels, test_labels = load_data()
+   x_train, x_test, y_train, y_test = gunpoint_oldversusyoung.load_data()
    ```
 
-Use the following to access the synthetic dataset:
+Use the following to access the gunpoint old versus young dataset use:
    ```python
-   from control_limits.datasets.synthetic_data import load_data
+   import datasets.freezer_small_train as freezer_small_train
    
-   train_data, test_data, train_labels, test_labels = load_data()
+   x_train, x_test, y_train, y_test = freezer_small_train.load_data()
    ```
 
+Use the following to access the gunpoint old versus young dataset use:
+   ```python
+   import datasets.sony_ai_robot as sony_ai_robot
+   
+   x_train, x_test, y_train, y_test = sony_ai_robot.load_data()
+   ```
 
 #### 2.2 - Own dataset
 
 If you wish to use the package with your own dataset, make sure that the dataset has the following structure:
-1. ```train_data``` and ```test_data``` must be two-dimensional numpy arrays.
-2. ```train_labels``` and ```test_labels``` must be one-dimensional integer numpy arrays. The label of the first class 
+1. ```x_train``` and ```x_test``` must be two-dimensional numpy arrays of time-series.
+2. ```y_train``` and ```y_test``` must be one-dimensional integer numpy arrays. The label of the first class 
 must be 1, while the label of the second class must be 2.
 
 ### 3 - Running the package
@@ -80,22 +101,22 @@ must be 1, while the label of the second class must be 2.
 To initialize and train the classifier, use the following:
 
  ```python
- from control_limits import ControlLimits
+ import control_limits_search
     
- clf = ControlLimits(precision_limits=0.95, length_limits=10, shape_limits=1)
- training_output = clf.train(train_data, train_labels)
+ cl = control_limits_search.ControlLimitsSearch(cl_precision=0.95, cl_len=10, cl_shape=1)
+ train_pred = cl.train(x_train, y_train)
  ```
  
  The classifier has three parameters that one can change to improve/adjust the classification:
- 1. ```precision_limits```, which represents the minimum desired precision that the classifier must attempt to preserve.
- 2. ```length_limits```, which represents the minimum length of the control limits.
- 3. ```shape_limits```, which represents whether the control limits are parallel (```shape_limits=1```) or not
-parallel (```shape_limits=0```).
+ 1. ```cl_precision```, which represents the minimum desired precision that the classifier must attempt to preserve.
+ 2. ```cl_len```, which represents the minimum length of the control limits.
+ 3. ```cl_shape```, which represents whether the control limits are parallel (```cl_shape=1```) or not
+parallel (```cl_shape=0```).
 
-Use the following method to access the perfomance of the classifier:
+Use the following method to access the performance of the classifier:
 
 ```python
- train_acc = clf.accuracy(train_data, train_labels, training_output)
+ train_precision, train_recall, train_f1_score  = cl.performance(x_train, y_train, train_pred)
  ```
 
 #### 3.2 - Test the classifier
@@ -103,8 +124,8 @@ Use the following method to access the perfomance of the classifier:
 To evaluate the performance of the classifier on the test set, use the following:
 
  ```python
- testing_output = clf.test(test_data, test_labels, training_output)
- test_acc = clf.accuracy(test_data, test_labels, testing_output)
+ test_pred = cl.test(x_test, y_test, train_pred)
+ test_precision, test_recall, test_f1_score = cl.performance(x_test, y_test, test_pred)
  ```
  
  #### 3.3 - Visualizing the performance of the classifier
@@ -112,11 +133,17 @@ To evaluate the performance of the classifier on the test set, use the following
 To visualize the performance of the classifier on the train and test set, we provide a function that plots the time 
 series of the first class along with the false negative/false positive resulting from the classification task: 
 ```python
-from control_limits import plot_control_limits
+import plotting.plot as plot
 
-plot_limits(train_data, test_data, train_labels, test_labels, training_output, testing_output)
+plot.cl_plot(x_train, x_test, y_train, y_test, train_pred, test_pred, filename=filename)
 ```
+The resulting plot is saved according to the file name provided from the user.
 
 #### 3.4 - Example script
 
 For further reference/demonstration on how to use the package, we provide an additional script in the example folder.
+
+## Contributing
+Improvements are always welcome, feel free to log a bug, write a suggestion or contribute code via merge request. 
+All details are listed in our [contribution guide](CONTRIBUTING.md).
+

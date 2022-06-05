@@ -3,7 +3,7 @@ from control_limits import ControlLimits, plot_control_limits
 
 
 if __name__ == "__main__":
-    # Load data
+    # Load data benchmark dataset
     train_data, test_data, train_labels, test_labels = load_data()
 
     # Training of the control limits
